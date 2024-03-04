@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	clientset, err := kubernetes.NewForConfig(kConfig)
+	clientset, err = kubernetes.NewForConfig(kConfig) // Initialize the global clientset
 	if err != nil {
 		panic(err)
 	}
@@ -66,6 +66,18 @@ func startServer(listenAddr string) error {
 
 // healthHandler responds with the health status of the application.
 func healthHandler(w http.ResponseWriter, r *http.Request) {
+	// w.WriteHeader(http.StatusOK)
+
+	// _, err := w.Write([]byte("ok"))
+	// if err != nil {
+	// 	fmt.Println("failed writing to response")
+	// }
+
+	if clientset == nil {
+        http.Error(w, "Kubernetes client not initialized", http.StatusInternalServerError)
+        return
+    }
+
 	deploymentsClient := clientset.AppsV1().Deployments(metav1.NamespaceAll)
 	list, err := deploymentsClient.List(context.TODO(), metav1.ListOptions{})
 
@@ -85,5 +97,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write([]byte(healthStatus))
 	if err != nil {
 		fmt.Println("Failed writing to response")
+		return
 	}
 }
