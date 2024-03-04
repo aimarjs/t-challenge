@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/aimarjs/t-challenge/compare/v0.0.3...v0.0.4) (2024-03-04)
+
+
+### Bug Fixes
+
+* Update Docker actions and image pull policy*** ([7bb5035](https://github.com/aimarjs/t-challenge/commit/7bb5035a72b09208bd7686d6dbf3391fea24a20c))
+
 ## [0.0.3](https://github.com/aimarjs/t-challenge/compare/v0.0.2...v0.0.3) (2024-03-04)
 
 
