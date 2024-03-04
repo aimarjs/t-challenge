@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.5](https://github.com/aimarjs/t-challenge/compare/v0.0.4...v0.0.5) (2024-03-04)
+
+
+### Bug Fixes
+
+* Update health check path and port ([6aa5d37](https://github.com/aimarjs/t-challenge/commit/6aa5d37fc0d1da95139d71d0b426180115fbb0cc))
+
 ## [0.0.4](https://github.com/aimarjs/t-challenge/compare/v0.0.3...v0.0.4) (2024-03-04)
 
 
