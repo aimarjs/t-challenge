@@ -14,7 +14,7 @@ jobs:
 
       - name: docker meta
         id: meta
-        uses: actions/metadata-action@v3
+        uses: docker/metadata-action@v3
         with:
           images: |
             aimarjs/tyk-sre-assignment
