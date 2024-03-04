@@ -2,29 +2,35 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"net/http"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/rest"
 )
 
 var clientset *kubernetes.Clientset
 
 func main() {
-	kubeconfig := flag.String("kubeconfig", "", "path to kubeconfig, leave empty for in-cluster")
+	// kubeconfig := flag.String("kubeconfig", "", "path to kubeconfig, leave empty for in-cluster")
 	listenAddr := flag.String("address", ":8080", "HTTP server listen address")
 
 	flag.Parse()
 
-	kConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
-	if err != nil {
-		panic(err)
-	}
+	config, err := rest.InClusterConfig()
+    if err != nil {
+        panic(err.Error())
+    }
 
-	clientset, err = kubernetes.NewForConfig(kConfig) // Initialize the global clientset
+	// kConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	clientset, err = kubernetes.NewForConfig(config) // Initialize the global clientset
 	if err != nil {
 		panic(err)
 	}
@@ -86,15 +92,18 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	healthStatus := "ok"
-	for _, d := range list.Items {
-		if d.Status.ReadyReplicas < *d.Spec.Replicas {
-			healthStatus = "unhealthy"
-			break
-		}
-	}
+	healthStatus := make(map[string]string)
+    for _, d := range list.Items {
+        if d.Status.ReadyReplicas == *d.Spec.Replicas {
+            healthStatus[d.Name] = "Healthy"
+        } else {
+            healthStatus[d.Name] = "Unhealthy"
+        }
+    }
 
-	_, err = w.Write([]byte(healthStatus))
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(healthStatus)
+
 	if err != nil {
 		fmt.Println("Failed writing to response")
 		return
