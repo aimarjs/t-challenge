@@ -1,13 +1,17 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net/http"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
+
+var clientset *kubernetes.Clientset
 
 func main() {
 	kubeconfig := flag.String("kubeconfig", "", "path to kubeconfig, leave empty for in-cluster")
@@ -62,10 +66,24 @@ func startServer(listenAddr string) error {
 
 // healthHandler responds with the health status of the application.
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+	deploymentsClient := clientset.AppsV1().Deployments(metav1.NamespaceAll)
+	list, err := deploymentsClient.List(context.TODO(), metav1.ListOptions{})
 
-	_, err := w.Write([]byte("ok"))
 	if err != nil {
-		fmt.Println("failed writing to response")
+		http.Error(w, "Failed to list deployments", http.StatusInternalServerError)
+		return
+	}
+
+	healthStatus := "ok"
+	for _, d := range list.Items {
+		if d.Status.ReadyReplicas < *d.Spec.Replicas {
+			healthStatus = "unhealthy"
+			break
+		}
+	}
+
+	_, err = w.Write([]byte(healthStatus))
+	if err != nil {
+		fmt.Println("Failed writing to response")
 	}
 }
