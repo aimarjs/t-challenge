@@ -22,22 +22,22 @@ jobs:
         run: go mod verify
 
       - name: Go Build
-        run: go build -v
+        run: go build -v ./...
 
       - name: GO Vet
-        run: go vet .
+        run: go vet ./...
 
       - name: Staticcheck Setup
         run: go get honnef.co/go/tools/cmd/staticcheck
 
       - name: Staticcheck Run
-        run: staticcheck .
+        run: staticcheck ./...
 
       - name: Install Golint
         run: go install golang.org/x/lint/golint@latest
 
       - name: Golint run
-        run: golint .
+        run: golint ./...
 
       # - name: Run tests
       #   run: go test
