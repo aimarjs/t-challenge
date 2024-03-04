@@ -1,4 +1,4 @@
-module app
+module github.com/TykTechnology/tyk-sre-assignment/app
 
 go 1.21
 
