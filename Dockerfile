@@ -1,13 +1,23 @@
-FROM golang:1.16 as builder
+FROM golang:1.21 as builder
 
 WORKDIR /app
-COPY . .
+
+COPY go.mod go.sum ./
 
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -v -o app
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tyk-sre-assignment .
 
 FROM alpine:latest  
-WORKDIR /root/
-COPY --from=builder /app/app .
 
-CMD ["./app"]
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+COPY --from=builder /app/tyk-sre-assignment .
+
+EXPOSE 8080
+
+CMD ["./tyk-sre-assignment"]
