@@ -17,7 +17,13 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Go setup
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          check-latest: true
+          cache-dependency-path: |
+            subdir/go.sum
+            tools/go.sum`
 
       - name: Go Verify
         run: go mod verify
@@ -28,11 +34,9 @@ jobs:
       - name: GO Vet
         run: go vet ./...
 
-      - name: Staticcheck Setup
-        run: go get honnef.co/go/tools/cmd/staticcheck
-
-      - name: Staticcheck Run
-        run: staticcheck ./...
+      - uses: dominikh/staticcheck-action@v1.2.0
+        with:
+          version: "2022.1.1"
 
       - name: Install Golint
         run: go install golang.org/x/lint/golint@latest
