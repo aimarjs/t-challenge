@@ -132,7 +132,7 @@ func enableIsolationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func disableIsolationHandler(w http.ResponseWriter, r *http.Request) {
-    policyName := "deny-all-traffic"
+    policyName := "isolation-policy"
 
     namespace, err := getCurrentNamespace()
     if err != nil {
@@ -183,7 +183,7 @@ func createIsolationNetworkPolicy(namespace string) *networkingv1.NetworkPolicy 
                 networkingv1.PolicyTypeEgress,
             },
             Ingress: []networkingv1.NetworkPolicyIngressRule{}, // Deny all ingress
-            Egress:  []networkingv1.NetworkPolicyEgressRule{},  // Deny all egress
+            // Egress:  []networkingv1.NetworkPolicyEgressRule{},  // Deny all egress
         },
     }
 }
