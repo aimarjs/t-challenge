@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.6](https://github.com/aimarjs/t-challenge/compare/v0.0.5...v0.0.6) (2024-03-05)
+
+
+### Bug Fixes
+
+* add manifest-based releaser is support ([b03f999](https://github.com/aimarjs/t-challenge/commit/b03f999a4b25b2165124b63cb43d9ae02dfe204f))
+* Refactor liveness and readiness probes, and update healthHandler response format ([034929a](https://github.com/aimarjs/t-challenge/commit/034929a93729ba643c61fd0b54d7be45a80fa6f1))
+* remove golint for now ([b86d315](https://github.com/aimarjs/t-challenge/commit/b86d315155a035245b5199fe0cef0691b3ab895e))
+
 ## [0.0.5](https://github.com/aimarjs/t-challenge/compare/v0.0.4...v0.0.5) (2024-03-04)
 
 
