@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.10](https://github.com/aimarjs/t-challenge/compare/v0.0.9...v0.0.10) (2024-03-05)
+
+
+### Bug Fixes
+
+* Add support for reading namespace from a file*** ([93e50dc](https://github.com/aimarjs/t-challenge/commit/93e50dc8af4eb8539a8bd2c27c25ea790b7319e2))
+
 ## [0.0.9](https://github.com/aimarjs/t-challenge/compare/v0.0.8...v0.0.9) (2024-03-05)
 
 
