@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.9](https://github.com/aimarjs/t-challenge/compare/v0.0.8...v0.0.9) (2024-03-05)
+
+
+### Bug Fixes
+
+* Refactor build and release workflows, and add error logging in healthHandler ([b9a50cd](https://github.com/aimarjs/t-challenge/commit/b9a50cd93d1f6c27762784164614ae9f806d44b2))
+
 ## [0.0.8](https://github.com/aimarjs/t-challenge/compare/v0.0.7...v0.0.8) (2024-03-05)
 
 
