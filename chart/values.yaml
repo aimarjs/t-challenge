@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: aimarjs/tyk-sre-assignment
   pullPolicy: Always
-  tag: latest
+  tag: 0.0.6
 
 imagePullSecrets: []
 nameOverride: ""

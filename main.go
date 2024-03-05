@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -40,6 +41,12 @@ func main() {
 	if err := startServer(*listenAddr); err != nil {
 		panic(err)
 	}
+
+	if err := createNetworkPolicy(clientset); err != nil {
+        fmt.Println("Error creating network policy:", err)
+    } else {
+        fmt.Println("Network policy created successfully")
+    }
 }
 
 // getKubernetesVersion returns a string GitVersion of the Kubernetes server defined by the clientset.
@@ -90,10 +97,36 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(healthStatus)
+    err = json.NewEncoder(w).Encode(healthStatus)
 
 	if err != nil {
-		fmt.Println("Failed writing to response")
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		fmt.Println("Failed writing to response", err)
 		return
 	}
+}
+
+// create a network policy that denies all traffic in and out of the default namespace
+func createNetworkPolicy(clientset *kubernetes.Clientset) error {
+    policy := &networkingv1.NetworkPolicy{
+        ObjectMeta: metav1.ObjectMeta{
+            Name:      "deny-cross-namespace-traffic",
+            Namespace: "default",
+        },
+        Spec: networkingv1.NetworkPolicySpec{
+            PodSelector: metav1.LabelSelector{}, // Selects all pods in the namespace
+            PolicyTypes: []networkingv1.PolicyType{
+                networkingv1.PolicyTypeIngress,
+                networkingv1.PolicyTypeEgress,
+            },
+            Ingress: []networkingv1.NetworkPolicyIngressRule{}, // Deny all ingress
+            Egress: []networkingv1.NetworkPolicyEgressRule{},   // Deny all egress
+        },
+    }
+
+    _, err := clientset.NetworkingV1().NetworkPolicies("default").Create(context.TODO(), policy, metav1.CreateOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to create network policy: %v", err)
+	}
+	return nil
 }
