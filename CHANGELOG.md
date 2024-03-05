@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.11](https://github.com/aimarjs/t-challenge/compare/v0.0.10...v0.0.11) (2024-03-05)
+
+
+### Bug Fixes
+
+* Add Tyk Helm chart and Nginx chart with service and service account templates ([c76d0c7](https://github.com/aimarjs/t-challenge/commit/c76d0c75013416afc964ba3fb1ad9662593088ff))
+
 ## [0.0.10](https://github.com/aimarjs/t-challenge/compare/v0.0.9...v0.0.10) (2024-03-05)
 
 
