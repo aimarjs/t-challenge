@@ -14,6 +14,7 @@ import (
 )
 
 var clientset *kubernetes.Clientset
+// var namespace string
 
 func main() {
 	kubeconfig := flag.String("kubeconfig", "", "path to kubeconfig, leave empty for in-cluster")
@@ -36,17 +37,17 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("Connected to Kubernetes %s\n", version)
-
-	if err := startServer(*listenAddr); err != nil {
-		panic(err)
-	}
-
 	if err := createNetworkPolicy(clientset); err != nil {
         fmt.Println("Error creating network policy:", err)
     } else {
         fmt.Println("Network policy created successfully")
     }
+
+	fmt.Printf("Connected to Kubernetes %s\n", version)
+
+	if err := startServer(*listenAddr); err != nil {
+		panic(err)
+	}
 }
 
 // getKubernetesVersion returns a string GitVersion of the Kubernetes server defined by the clientset.
@@ -72,14 +73,32 @@ func startServer(listenAddr string) error {
 	return http.ListenAndServe(listenAddr, nil)
 }
 
+func getCurrentNamespace() (string, error) {
+	clientCfg, _ := clientcmd.NewDefaultClientConfigLoadingRules().Load()
+	namespace := clientCfg.Contexts[clientCfg.CurrentContext].Namespace
+
+	if namespace == "" {
+        namespace = "default"
+    }
+
+	return string(namespace), nil
+}
+
 // healthHandler responds with the health status of the application.
 func healthHandler(w http.ResponseWriter, r *http.Request) {
+
+	namespace, err := getCurrentNamespace()
+	if err != nil {
+		http.Error(w, "Failed to get current namespace", http.StatusInternalServerError)
+		return
+	}
+
 	if clientset == nil {
         http.Error(w, "Kubernetes client not initialized", http.StatusInternalServerError)
         return
     }
 
-	deploymentsClient := clientset.AppsV1().Deployments(metav1.NamespaceAll)
+	deploymentsClient := clientset.AppsV1().Deployments(namespace)
 	list, err := deploymentsClient.List(context.TODO(), metav1.ListOptions{})
 
 	if err != nil {
@@ -108,10 +127,14 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 // create a network policy that denies all traffic in and out of the default namespace
 func createNetworkPolicy(clientset *kubernetes.Clientset) error {
+	namespace, err := getCurrentNamespace()
+	if err != nil {
+		return fmt.Errorf("failed to get current namespace: %v", err)
+	}
     policy := &networkingv1.NetworkPolicy{
         ObjectMeta: metav1.ObjectMeta{
             Name:      "deny-cross-namespace-traffic",
-            Namespace: "default",
+            Namespace: string(namespace),
         },
         Spec: networkingv1.NetworkPolicySpec{
             PodSelector: metav1.LabelSelector{}, // Selects all pods in the namespace
@@ -124,7 +147,7 @@ func createNetworkPolicy(clientset *kubernetes.Clientset) error {
         },
     }
 
-    _, err := clientset.NetworkingV1().NetworkPolicies("default").Create(context.TODO(), policy, metav1.CreateOptions{})
+	_, err = clientset.NetworkingV1().NetworkPolicies(string(namespace)).Create(context.TODO(), policy, metav1.CreateOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to create network policy: %v", err)
 	}
