@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.7](https://github.com/aimarjs/t-challenge/compare/v0.0.6...v0.0.7) (2024-03-05)
+
+
+### Bug Fixes
+
+* Add network policy and update liveness and readiness probes ([f6efbc2](https://github.com/aimarjs/t-challenge/commit/f6efbc23eae03fb3dbb96f2bdddd6bdc6cf1b58d))
+
 ## [0.0.6](https://github.com/aimarjs/t-challenge/compare/v0.0.5...v0.0.6) (2024-03-05)
 
 
