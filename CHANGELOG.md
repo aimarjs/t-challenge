@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.12](https://github.com/aimarjs/t-challenge/compare/v0.0.11...v0.0.12) (2024-03-05)
+
+
+### Bug Fixes
+
+* Update clusterrole.yaml and main.go*** ([5b78207](https://github.com/aimarjs/t-challenge/commit/5b782074a7d048af9dbd3035033874842a782382))
+
 ## [0.0.11](https://github.com/aimarjs/t-challenge/compare/v0.0.10...v0.0.11) (2024-03-05)
 
 
