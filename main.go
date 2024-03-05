@@ -39,11 +39,8 @@ func main() {
 		panic(err)
 	}
 
-	if err := createNetworkPolicy(clientset); err != nil {
-        fmt.Println("Error creating network policy:", err)
-    } else {
-        fmt.Println("Network policy created successfully")
-    }
+	http.HandleFunc("/enable-isolation", enableIsolationHandler)
+    http.HandleFunc("/disable-isolation", disableIsolationHandler)
 
 	fmt.Printf("Connected to Kubernetes %s\n", version)
 
@@ -123,32 +120,70 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// create a network policy that denies all traffic in and out of the default namespace
-func createNetworkPolicy(clientset *kubernetes.Clientset) error {
-	namespace, err := getCurrentNamespace()
-	if err != nil {
-		log.Fatalf("Error getting current namespace: %v", err)
-	}
+func enableIsolationHandler(w http.ResponseWriter, r *http.Request) {
+    err := applyIsolationToAllNamespaces()
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Failed to apply isolation policies: %v", err), http.StatusInternalServerError)
+        return
+    }
 
-    policy := &networkingv1.NetworkPolicy{
+    w.WriteHeader(http.StatusOK)
+    fmt.Fprintln(w, "Isolation enabled across all namespaces")
+}
+
+func disableIsolationHandler(w http.ResponseWriter, r *http.Request) {
+    policyName := "deny-all-traffic"
+
+    namespace, err := getCurrentNamespace()
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Error getting current namespace: %v", err), http.StatusInternalServerError)
+        return
+    }
+
+    err = clientset.NetworkingV1().NetworkPolicies(namespace).Delete(context.TODO(), policyName, metav1.DeleteOptions{})
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Failed to remove isolation policy: %v", err), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    fmt.Fprintln(w, "Isolation disabled")
+}
+
+func applyIsolationToAllNamespaces() error {
+    namespaces, err := clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
+    if err != nil {
+        return fmt.Errorf("failed to list namespaces: %v", err)
+    }
+
+    for _, ns := range namespaces.Items {
+        policy := createIsolationNetworkPolicy(ns.Name)
+        _, err := clientset.NetworkingV1().NetworkPolicies(ns.Name).Create(context.TODO(), policy, metav1.CreateOptions{})
+        if err != nil {
+            // Consider logging the error instead of immediately returning
+            log.Printf("Failed to apply isolation policy to namespace %s: %v", ns.Name, err)
+            // Continue attempting to apply to other namespaces
+        }
+    }
+
+    return nil // or detailed error aggregation if needed
+}
+
+func createIsolationNetworkPolicy(namespace string) *networkingv1.NetworkPolicy {
+    // This is a very basic example. Customize it based on your actual requirements.
+    return &networkingv1.NetworkPolicy{
         ObjectMeta: metav1.ObjectMeta{
-            Name:      "deny-cross-namespace-traffic",
-            Namespace: string(namespace),
+            Name: "isolation-policy",
+			Namespace: namespace,
         },
         Spec: networkingv1.NetworkPolicySpec{
-            PodSelector: metav1.LabelSelector{}, // Selects all pods in the namespace
+            PodSelector: metav1.LabelSelector{}, // Selects all pods
             PolicyTypes: []networkingv1.PolicyType{
                 networkingv1.PolicyTypeIngress,
                 networkingv1.PolicyTypeEgress,
             },
             Ingress: []networkingv1.NetworkPolicyIngressRule{}, // Deny all ingress
-            Egress: []networkingv1.NetworkPolicyEgressRule{},   // Deny all egress
+            Egress:  []networkingv1.NetworkPolicyEgressRule{},  // Deny all egress
         },
     }
-
-	_, err = clientset.NetworkingV1().NetworkPolicies(string(namespace)).Create(context.TODO(), policy, metav1.CreateOptions{})
-	if err != nil {
-		return fmt.Errorf("failed to create network policy: %v", err)
-	}
-	return nil
 }

@@ -1,13 +1,14 @@
-# Default values for tyk-sre-assignment.
+# Default values for nginx.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: aimarjs/tyk-sre-assignment
-  pullPolicy: Always
-  tag: 0.0.6
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -25,7 +26,8 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
-podLabels: {}
+podLabels:
+  app: tyk
 
 podSecurityContext:
   {}
@@ -42,7 +44,7 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 80
 
 ingress:
   enabled: false
