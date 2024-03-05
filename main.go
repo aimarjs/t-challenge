@@ -66,6 +66,7 @@ func getKubernetesVersion(clientset kubernetes.Interface) (string, error) {
 // Expects a listenAddr to bind to.
 func startServer(listenAddr string) error {
 	http.HandleFunc("/healthz", healthHandler)
+	http.HandleFunc("/status", statusHandler)
 
 	fmt.Printf("Server listening on %s\n", listenAddr)
 
@@ -80,15 +81,18 @@ func getCurrentNamespace() (string, error) {
     return string(data), nil
 }
 
-// healthHandler responds with the health status of the application.
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-
+func statusHandler(w http.ResponseWriter, r *http.Request) {
 	version, err := getKubernetesVersion(clientset)
     if err != nil {
         http.Error(w, fmt.Sprintf("Failed to communicate with Kubernetes API: %v", err), http.StatusInternalServerError)
         return
     }
 
+	fmt.Fprintf(w, "Kubernetes API communication successful. Version: %s\n", version)
+}
+
+// healthHandler responds with the health status of the application.
+func healthHandler(w http.ResponseWriter, r *http.Request) {
 	namespace, err := getCurrentNamespace()
 	if err != nil {
 		log.Fatalf("Error getting current namespace: %v", err)
@@ -124,8 +128,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed writing to response", err)
 		return
 	}
-
-	fmt.Fprintf(w, "Kubernetes API communication successful. Version: %s\n", version)
 }
 
 func enableIsolationHandler(w http.ResponseWriter, r *http.Request) {
