@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -75,14 +76,11 @@ func startServer(listenAddr string) error {
 }
 
 func getCurrentNamespace() (string, error) {
-	clientCfg, _ := clientcmd.NewDefaultClientConfigLoadingRules().Load()
-	namespace := clientCfg.Contexts[clientCfg.CurrentContext].Namespace
-
-	if namespace == "" {
-        namespace = "default"
+    data, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
+    if err != nil {
+        return "", fmt.Errorf("failed to read namespace: %w", err)
     }
-
-	return string(namespace), nil
+    return string(data), nil
 }
 
 // healthHandler responds with the health status of the application.
@@ -131,7 +129,7 @@ func createNetworkPolicy(clientset *kubernetes.Clientset) error {
 	if err != nil {
 		log.Fatalf("Error getting current namespace: %v", err)
 	}
-	
+
     policy := &networkingv1.NetworkPolicy{
         ObjectMeta: metav1.ObjectMeta{
             Name:      "deny-cross-namespace-traffic",
