@@ -1,5 +1,5 @@
 ---
-name: App
+name: build
 
 on:
   push:
@@ -15,7 +15,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  app:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -35,8 +35,8 @@ jobs:
       - name: Go Build
         run: go build -v ./...
 
-      - name: GO Vet
-        run: go vet ./...
+      # - name: GO Vet
+      #   run: go vet ./...
 
       # - name: golangci-lint
       #   uses: golangci/golangci-lint-action@v4

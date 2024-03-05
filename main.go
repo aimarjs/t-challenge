@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 
 	networkingv1 "k8s.io/api/networking/v1"
@@ -89,8 +90,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 	namespace, err := getCurrentNamespace()
 	if err != nil {
-		http.Error(w, "Failed to get current namespace", http.StatusInternalServerError)
-		return
+		log.Fatalf("Error getting current namespace: %v", err)
 	}
 
 	if clientset == nil {
@@ -129,8 +129,9 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 func createNetworkPolicy(clientset *kubernetes.Clientset) error {
 	namespace, err := getCurrentNamespace()
 	if err != nil {
-		return fmt.Errorf("failed to get current namespace: %v", err)
+		log.Fatalf("Error getting current namespace: %v", err)
 	}
+	
     policy := &networkingv1.NetworkPolicy{
         ObjectMeta: metav1.ObjectMeta{
             Name:      "deny-cross-namespace-traffic",
