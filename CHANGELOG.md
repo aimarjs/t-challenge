@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.8](https://github.com/aimarjs/t-challenge/compare/v0.0.7...v0.0.8) (2024-03-05)
+
+
+### Bug Fixes
+
+* Refactor code to get current namespace dynamically ([51223ba](https://github.com/aimarjs/t-challenge/commit/51223ba2fc5ca3965a47c196b13d33544dacead1))
+
 ## [0.0.7](https://github.com/aimarjs/t-challenge/compare/v0.0.6...v0.0.7) (2024-03-05)
 
 
