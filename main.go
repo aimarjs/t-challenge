@@ -83,6 +83,12 @@ func getCurrentNamespace() (string, error) {
 // healthHandler responds with the health status of the application.
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 
+	version, err := getKubernetesVersion(clientset)
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Failed to communicate with Kubernetes API: %v", err), http.StatusInternalServerError)
+        return
+    }
+
 	namespace, err := getCurrentNamespace()
 	if err != nil {
 		log.Fatalf("Error getting current namespace: %v", err)
@@ -118,6 +124,8 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed writing to response", err)
 		return
 	}
+
+	fmt.Fprintf(w, "Kubernetes API communication successful. Version: %s\n", version)
 }
 
 func enableIsolationHandler(w http.ResponseWriter, r *http.Request) {
