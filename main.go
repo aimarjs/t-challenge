@@ -9,28 +9,23 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 var clientset *kubernetes.Clientset
 
 func main() {
-	// kubeconfig := flag.String("kubeconfig", "", "path to kubeconfig, leave empty for in-cluster")
+	kubeconfig := flag.String("kubeconfig", "", "path to kubeconfig, leave empty for in-cluster")
 	listenAddr := flag.String("address", ":8080", "HTTP server listen address")
 
 	flag.Parse()
 
-	config, err := rest.InClusterConfig()
-    if err != nil {
-        panic(err.Error())
-    }
+	kConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	if err != nil {
+		panic(err)
+	}
 
-	// kConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	clientset, err = kubernetes.NewForConfig(config) // Initialize the global clientset
+	clientset, err = kubernetes.NewForConfig(kConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -72,13 +67,6 @@ func startServer(listenAddr string) error {
 
 // healthHandler responds with the health status of the application.
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	// w.WriteHeader(http.StatusOK)
-
-	// _, err := w.Write([]byte("ok"))
-	// if err != nil {
-	// 	fmt.Println("failed writing to response")
-	// }
-
 	if clientset == nil {
         http.Error(w, "Kubernetes client not initialized", http.StatusInternalServerError)
         return
