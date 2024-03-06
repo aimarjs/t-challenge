@@ -5,10 +5,10 @@ on:
   push:
     branches:
       - "dev"
-  pull_request:
-    branches:
-      - main
-    types: [closed]
+  # pull_request:
+  #   branches:
+  #     - main
+  #   types: [closed]
 
 permissions:
   contents: write
