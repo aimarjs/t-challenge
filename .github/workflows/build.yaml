@@ -4,11 +4,11 @@ name: build
 on:
   push:
     branches:
-      - "!main"
-      - "*"
-  # pull_request:
-  #   branches:
-  #     - main
+      - "dev"
+  pull_request:
+    branches:
+      - main
+    types: [closed]
 
 permissions:
   contents: write
@@ -16,31 +16,32 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    name: build and test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && contains(github.ref, 'refs/heads/feature/')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Go setup
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
 
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
       - name: Go Verify
         run: go mod verify
 
-      - name: Go Build
+      - name: Build
         run: go build -v ./...
 
-      - name: GO Vet
-        run: go vet ./...
-
-      # - name: golangci-lint
-      #   uses: golangci/golangci-lint-action@v4
-      #   with:
-      #     version: v1.56.2
-
-      - name: Run tests
-        run: go test -v
+      - name: Test
+        run: go test -v ./...
 
       - uses: google-github-actions/release-please-action@v4
         id: release
