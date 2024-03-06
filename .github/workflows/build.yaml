@@ -1,0 +1,51 @@
+---
+name: build
+
+on:
+  push:
+    branches:
+      - dev
+  # pull_request:
+  #   branches:
+  #     - main
+  #   types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    name: build and test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && contains(github.ref, 'refs/heads/dev')
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Go setup
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Go Verify
+        run: go mod verify
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
+
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          release-type: go
+          target-branch: ${{ github.ref_name }}
