@@ -27,7 +27,7 @@ serviceAccount:
 
 podAnnotations: {}
 podLabels:
-  app: tyk
+  app: nginx
 
 podSecurityContext:
   {}

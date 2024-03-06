@@ -35,16 +35,16 @@ jobs:
       - name: Go Build
         run: go build -v ./...
 
-      # - name: GO Vet
-      #   run: go vet ./...
+      - name: GO Vet
+        run: go vet ./...
 
-      # - name: golangci-lint
-      #   uses: golangci/golangci-lint-action@v4
-      #   with:
-      #     version: latest
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
 
-      # - name: Run tests
-      #   run: go test
+      - name: Run tests
+        run: go test -v
 
       - uses: google-github-actions/release-please-action@v4
         id: release
