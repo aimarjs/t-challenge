@@ -1,0 +1,28 @@
+name: tests
+
+on:
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    name: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.22"
+
+      - name: prepare dependencies
+        run: |
+          go mod download
+
+      - name: test
+        run: |
+          go test -race ./...

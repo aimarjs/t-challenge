@@ -1,54 +1,54 @@
----
-name: build
+# ---
+# name: build
 
-on:
-  push:
-    branches:
-      - main
-      - dev
-  pull_request:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
+#       - dev
+#   pull_request:
+#     branches:
+#       - main
 
-permissions:
-  contents: write
-  pull-requests: write
+# permissions:
+#   contents: write
+#   pull-requests: write
 
-jobs:
-  build:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
+# jobs:
+#   build:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - name: Go setup
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
-          # check-latest: true
-          # cache-dependency-path: |
-          #   subdir/go.sum
-          #   tools/go.sum`
+#       - name: Go setup
+#         uses: actions/setup-go@v5
+#         with:
+#           go-version: "1.22"
+#           # check-latest: true
+#           # cache-dependency-path: |
+#           #   subdir/go.sum
+#           #   tools/go.sum`
 
-      - name: Go Verify
-        run: go mod verify
+#       - name: Go Verify
+#         run: go mod verify
 
-      - name: Go Build
-        run: go build -v ./...
+#       - name: Go Build
+#         run: go build -v ./...
 
-      - name: GO Vet
-        run: go vet ./...
+#       - name: GO Vet
+#         run: go vet ./...
 
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.56.2
+#       - name: golangci-lint
+#         uses: golangci/golangci-lint-action@v4
+#         with:
+#           version: v1.56.2
 
-      - name: Run tests
-        run: go test -v
+#       - name: Run tests
+#         run: go test -v
 
-      - uses: google-github-actions/release-please-action@v4
-        id: release
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          release-type: go
-          target-branch: ${{ github.ref_name }}
+#       - uses: google-github-actions/release-please-action@v4
+#         id: release
+#         with:
+#           token: ${{ secrets.GH_TOKEN }}
+#           release-type: go
+#           target-branch: ${{ github.ref_name }}
