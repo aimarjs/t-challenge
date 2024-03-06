@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.0](https://github.com/aimarjs/t-challenge/compare/v1.0.0...v1.0.0) (2024-03-06)
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([716ba0b](https://github.com/aimarjs/t-challenge/commit/716ba0b1e37b2b6e373a67e5fdb536e3fc04f0cd))
+* release 1.0.0 ([6aa2248](https://github.com/aimarjs/t-challenge/commit/6aa22488f292dac8f015d81c6640fc30dd2a4294))
+* release 1.0.0 ([629c031](https://github.com/aimarjs/t-challenge/commit/629c03118d49bc7c86a5ab78cb63a21f0157ef7c))
+* release 1.0.0 ([167e36d](https://github.com/aimarjs/t-challenge/commit/167e36dbf70162fa42c4b6c4135239b327317b1e))
+
 ## [1.0.0](https://github.com/aimarjs/t-challenge/compare/v2.0.0...v1.0.0) (2024-03-06)
 
 
