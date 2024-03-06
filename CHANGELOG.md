@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/aimarjs/t-challenge/compare/v1.0.1...v1.0.2) (2024-03-06)
+
+
+### Bug Fixes
+
+* pipeline ([bdfa497](https://github.com/aimarjs/t-challenge/commit/bdfa497265cd3e1e2458ee4cf4d5adc98387d7a6))
+
 ## [1.0.1](https://github.com/aimarjs/t-challenge/compare/v1.0.0...v1.0.1) (2024-03-06)
 
 
