@@ -1,30 +1,5 @@
 # Changelog
 
-## [1.0.0](https://github.com/aimarjs/t-challenge/compare/v0.0.14...v1.0.0) (2024-03-06)
-
-
-### ⚠ BREAKING CHANGES
-
-* Update app label to nginx and update dependencies
-
-### Features
-
-* Update app label to nginx and update dependencies ([61ae881](https://github.com/aimarjs/t-challenge/commit/61ae8812acd98c5e7f5b6c5650d70240253bd981))
-
-
-### Bug Fixes
-
-* Remove build and release workflows ([00ed750](https://github.com/aimarjs/t-challenge/commit/00ed750a232ae64a0b296544abc4560cb4236293))
-* update ([f1593ae](https://github.com/aimarjs/t-challenge/commit/f1593ae1b4e6c8f2eb201b21faa85574858b0767))
-* update ci ([9938799](https://github.com/aimarjs/t-challenge/commit/99387992ca4998c55b16c5832ac9fcb50898aaa1))
-* update ci ([c763d53](https://github.com/aimarjs/t-challenge/commit/c763d5319dcf6a6d44fb7096a493e7418d94566a))
-* update ci ([cadd921](https://github.com/aimarjs/t-challenge/commit/cadd921ddcef8e6d32f8f20e089104b48b080fef))
-* update ci ([1a7ed1e](https://github.com/aimarjs/t-challenge/commit/1a7ed1e87988c005531f51532954eb7935aaa075))
-* update ci ([f9aebef](https://github.com/aimarjs/t-challenge/commit/f9aebef406716c1a5c9068cd5645db953ad47888))
-* Update Go version and golangci-lint version ([2c63751](https://github.com/aimarjs/t-challenge/commit/2c637518ffcfc834211692e8da90053d12b6946c))
-* Update Go version and skip Go installation in linting step ([ccd5c49](https://github.com/aimarjs/t-challenge/commit/ccd5c49aa2dd967db17af70a5d961bce36f6957f))
-* Update release.yaml workflow ([ceace84](https://github.com/aimarjs/t-challenge/commit/ceace844ff2d23f74f3ccb7e33c60c520eb7e741))
-
 ## [0.0.14](https://github.com/aimarjs/t-challenge/compare/v0.0.13...v0.0.14) (2024-03-05)
 
 
