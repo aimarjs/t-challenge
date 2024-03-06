@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/aimarjs/t-challenge/compare/v1.0.0...v1.0.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* update pipeline ([647f0b3](https://github.com/aimarjs/t-challenge/commit/647f0b3c3147bcafa084c44c460558f3160c6e5b))
+* Update pipeline.yaml to trigger builds only on the main branch ([331fd6f](https://github.com/aimarjs/t-challenge/commit/331fd6f6470f963e644dd0d0e256bc688f1f1c5e))
+
 ## [1.0.0](https://github.com/aimarjs/t-challenge/compare/v1.0.0...v1.0.0) (2024-03-06)
 
 
